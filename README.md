@@ -24,7 +24,7 @@ pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));
 pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));
 ```
 
-## Run Locally
+## Run Locally 
 ```bash
 npm i -g newman
 cp postman/environments/dev.postman_environment.json.example dev.env.json
