@@ -1,0 +1,40 @@
+name: Postman - Smoke (PR)
+on:
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm i -g newman jq
+
+      - name: Create environment from template
+        run: |
+          jq '.values |= map(
+            if .key == "API_BASE_URL" then .value=env.API_BASE_URL
+            elif .key == "Token" then .value=env.Token
+            elif .key == "Inst_Num" then .value=env.Inst_Num
+            elif .key == "Application_Num" then .value=env.Application_Num
+            elif .key == "TIMEOUT_MS" then .value=(env.TIMEOUT_MS // 1 | tostring)
+            else . end
+          )' postman/environments/dev.postman_environment.json.example > dev.env.json
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          Token: ${{ secrets.Token }}
+          Inst_Num: ${{ secrets.Inst_Num }}
+          Application_Num: ${{ secrets.Application_Num }}
+          TIMEOUT_MS: 5000
+
+      - name: Run Newman (smoke suite)
+        run: |
+          newman run postman/collections/API_Showcase_Base.postman_collection.json             -e dev.env.json             --reporters cli,junit             --reporter-junit-export newman-smoke.xml
+
+      - name: Upload JUnit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-smoke-report
+          path: newman-smoke.xml
