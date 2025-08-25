@@ -1,6 +1,11 @@
-name: Postman - Smoke (PR)
+name: Postman - Smoke (PR & Branch Push)
+
 on:
   pull_request:
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
 
 jobs:
   smoke:
@@ -29,9 +34,12 @@ jobs:
           Application_Num: ${{ secrets.Application_Num }}
           TIMEOUT_MS: 5000
 
-      - name: Run Newman (smoke suite)
+      - name: Run Newman (SMOKE)
         run: |
-          newman run postman/collections/API_Showcase_Base.postman_collection.json             -e dev.env.json             --reporters cli,junit             --reporter-junit-export newman-smoke.xml
+          newman run postman/collections/API_Showcase_Base.postman_collection.json \
+            -e dev.env.json \
+            --reporters cli,junit \
+            --reporter-junit-export newman-smoke.xml
 
       - name: Upload JUnit report
         uses: actions/upload-artifact@v4
