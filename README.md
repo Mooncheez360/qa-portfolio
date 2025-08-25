@@ -8,7 +8,7 @@
 This repo is a safe, public demo of how I structure API automation with Postman + GitHub Actions.  
 Two collections, simple env templating, and CI that runs smoke on PRs and full on `main`.  
 
-## Collections
+## Collections 
 - **API_Showcase_Base.postman_collection.json**  
   Core flows (loan submit/decision, etc). Used for fast smoke runs.  
 
