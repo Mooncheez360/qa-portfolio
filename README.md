@@ -1,7 +1,7 @@
 # QA Automation Portfolio — API Showcase
 
-[![Smoke CI](https://github.com/YOUR_GH_USERNAME/YOUR_REPO/actions/workflows/postman-smoke.yml/badge.svg)](https://github.com/YOUR_GH_USERNAME/YOUR_REPO/actions/workflows/postman-smoke.yml)
-[![Full CI](https://github.com/YOUR_GH_USERNAME/YOUR_REPO/actions/workflows/postman-full.yml/badge.svg)](https://github.com/YOUR_GH_USERNAME/YOUR_REPO/actions/workflows/postman-full.yml)
+[![Smoke CI](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-smoke.yml/badge.svg)](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-smoke.yml)
+[![Full CI](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-full.yml/badge.svg)](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-full.yml)
 
 ---
 
