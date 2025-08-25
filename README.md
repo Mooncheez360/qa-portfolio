@@ -1,81 +1,62 @@
-# QA Automation Portfolio (API) — Postman + CI
+# QA Automation Portfolio — API Showcase
 
-This is my public QA automation portfolio for API testing. It’s built the way I like to work: **fast signal, clean structure, no secrets in git**. You can clone it and run smoke tests locally in under a minute, and the CI is wired to show green checks on every PR.
+This repository is my public-safe QA automation portfolio for API testing. It demonstrates how I structure collections, environments, and CI for clean, maintainable test automation.
 
-**What’s in here**
-- **Postman collections** (showcase + smoke-focus) with minimal, portable assertions
-- **GitHub Actions CI**: PRs run a fast **smoke** suite; `main` runs the **full** showcase
-- Environment templating with safe placeholders (`{{API_BASE_URL}}`, `{{Token}}`, `{{Inst_Num}}`, `{{Application_Num}}`)
-- Ready-to-extend scaffold for **ACCELQ** E2E CI triggers
+## Collections
 
-```
-postman/
-  collections/
-    API_Showcase.postman_collection.json          # full demo suite (sanitized/generic)
-    API_Showcase.smoke.postman_collection.json    # tiny fast subset (Submit/Decision)
-  environments/
-    dev.postman_environment.json.example          # template for local runs
-.github/
-  workflows/
-    postman-smoke.yml                             # runs on PRs
-    postman-full.yml                              # runs on pushes to main
-    accelq-ci.yml                                 # optional: trigger ACCELQ jobs
+Two collections are included under `postman/collections/`:
+
+- **API_Showcase_Base.postman_collection.json**  
+  A safe demo set with generic endpoints for loan submit/decision and core flows.  
+- **API_Showcase_Extended.postman_collection.json**  
+  A richer version with additional genericized flows for Payments, Tradelines (including LoanHistories), Offers, and Dealer Plans.
+
+Both are sanitized, use placeholders (`{{API_BASE_URL}}`, `{{Token}}`, `{{Inst_Num}}`, `{{Application_Num}}`), and contain minimal portable tests:
+
+```js
+pm.test('status is 2xx', () => pm.response.to.be.success);
+pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));
+pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));
 ```
 
----
-
-## Run Locally (Newman)
-I keep local runs simple and reproducible.
+## Running Locally
 
 ```bash
 npm i -g newman
 cp postman/environments/dev.postman_environment.json.example dev.env.json
 # edit dev.env.json and set API_BASE_URL, Token, Inst_Num, Application_Num
-newman run postman/collections/API_Showcase.smoke.postman_collection.json -e dev.env.json
+newman run postman/collections/API_Showcase_Extended.postman_collection.json -e dev.env.json
 ```
 
-- **Assertions:** status is 2xx, JSON content-type present, response < `TIMEOUT_MS` (default 5000 ms)
-- **Secrets:** never committed. All secrets are injected at runtime (see CI below).
+## GitHub Actions CI
 
----
+Two workflows are included:
 
-## CI — GitHub Actions
-I like fast feedback. PRs run **smoke** only; `main` runs the **full** suite.
+- **Smoke (PRs)** — runs a small subset for fast signal.  
+- **Full (main)** — runs the complete Extended collection.  
 
-Badges (add after pushing):
+Badges after pushing:
+
 ```
 ![Smoke CI](https://github.com/YOUR_GH_USERNAME/YOUR_REPO/actions/workflows/postman-smoke.yml/badge.svg)
 ![Full CI](https://github.com/YOUR_GH_USERNAME/YOUR_REPO/actions/workflows/postman-full.yml/badge.svg)
-![ACCELQ](https://github.com/YOUR_GH_USERNAME/YOUR_REPO/actions/workflows/accelq-ci.yml/badge.svg)
 ```
 
-### Required GitHub Secrets
-- `API_BASE_URL` (e.g., https://api.example.com)
-- `Token` (Bearer token or similar)
-- `Inst_Num` (sample institution number or test value)
-- `Application_Num` (sample or test value)
+## Secrets
 
-Add these in **Settings → Secrets and variables → Actions**.
+Add in GitHub → Settings → Secrets and variables → Actions:
 
----
+- `API_BASE_URL` → e.g., https://api.example.com  
+- `Token` → dummy-token  
+- `Inst_Num` → 00001  
+- `Application_Num` → 12345  
 
-## Why the endpoints look generic
-I intentionally **sanitized** URLs and payloads to avoid exposing any proprietary details. Paths are representative (e.g., `/v1/applications/submit`) and assertions are portable. The point is to show **how** I structure testing, not reveal anyone’s API internals.
+These are test-only values to allow the workflows to run green.
 
----
+## Why the Endpoints Look Generic
 
-## Extending this
-- Add richer assertions per endpoint (schema checks, business rules)
-- Parameterize environment matrices (dev/qa/stage) using additional `*.example` files
-- Gate merges on CI with branch protection
-- Toggle parallelization in Newman via `--delay-request 0` (or in hosted runners use matrix strategy)
+Endpoints and payloads are intentionally generic to avoid exposing any proprietary data. They still demonstrate my ability to structure flows like Submit/Decision, Payment calculation, Tradeline histories, Offers, and Dealer Plan testing.
 
 ---
 
-## ACCELQ (optional)
-I also work with ACCELQ for E2E flows. The `accelq-ci.yml` workflow is a ready-to-fill scaffold that triggers a named job in ACCELQ using a tenant base URL and API key (both stored as secrets). When I want to demo end‑to‑end regression, I toggle that on for `main` nightly or on-demand.
-
----
-
-### Credit
-Everything in this repo is authored by me. It’s a minimal, public-safe demo of how I ship QA automation with clean CI and good hygiene.
+This repo shows the way I build **API QA automation**: portable, secure, and CI-ready.

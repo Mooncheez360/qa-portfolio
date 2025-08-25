@@ -1,0 +1,338 @@
+{
+  "info": {
+    "name": "API Showcase Collection",
+    "_postman_id": "00000000-0000-0000-0000-000000000000",
+    "description": "Public-safe demo collection for API QA portfolio (sanitized).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Calculate Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/v1/payments/calculate",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "v1",
+                "payments",
+                "calculate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Inst_Num\": \"{{Inst_Num}}\",\n  \"Application_Num\": \"{{Application_Num}}\",\n  \"Payload\": {}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.response.to.be.success);",
+                  "pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));",
+                  "pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tradelines",
+      "item": [
+        {
+          "name": "Submit Tradeline",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/v1/tradelines/submit",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "v1",
+                "tradelines",
+                "submit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Inst_Num\": \"{{Inst_Num}}\",\n  \"Application_Num\": \"{{Application_Num}}\",\n  \"Payload\": {}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.response.to.be.success);",
+                  "pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));",
+                  "pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Decision Tradeline",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/v1/tradelines/decision",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "v1",
+                "tradelines",
+                "decision"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Inst_Num\": \"{{Inst_Num}}\",\n  \"Application_Num\": \"{{Application_Num}}\",\n  \"Payload\": {}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.response.to.be.success);",
+                  "pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));",
+                  "pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Loan Histories",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/v1/tradelines/loanhistories",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "v1",
+                "tradelines",
+                "loanhistories"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Inst_Num\": \"{{Inst_Num}}\",\n  \"Application_Num\": \"{{Application_Num}}\",\n  \"Payload\": {}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.response.to.be.success);",
+                  "pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));",
+                  "pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Offers",
+      "item": [
+        {
+          "name": "Submit Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/v1/offers/submit",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "v1",
+                "offers",
+                "submit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Inst_Num\": \"{{Inst_Num}}\",\n  \"Application_Num\": \"{{Application_Num}}\",\n  \"Payload\": {}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.response.to.be.success);",
+                  "pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));",
+                  "pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Decision Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/v1/offers/decision",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "v1",
+                "offers",
+                "decision"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Inst_Num\": \"{{Inst_Num}}\",\n  \"Application_Num\": \"{{Application_Num}}\",\n  \"Payload\": {}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.response.to.be.success);",
+                  "pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));",
+                  "pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DealerPlans",
+      "item": [
+        {
+          "name": "Submit Dealer Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/v1/dealerplans/submit",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "v1",
+                "dealerplans",
+                "submit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Inst_Num\": \"{{Inst_Num}}\",\n  \"Application_Num\": \"{{Application_Num}}\",\n  \"Payload\": {}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.response.to.be.success);",
+                  "pm.test('responds fast', () => pm.expect(pm.response.responseTime).below(5000));",
+                  "pm.test('has JSON content-type', () => pm.response.to.have.header('content-type'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
