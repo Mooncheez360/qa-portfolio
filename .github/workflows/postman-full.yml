@@ -1,7 +1,9 @@
 name: Postman - Full (main)
+
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   full:
@@ -11,18 +13,27 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm i -g newman jq
+      - run: npm i -g newman
 
       - name: Create environment from template
         run: |
-          jq '.values |= map(
-            if .key == "API_BASE_URL" then .value=env.API_BASE_URL
-            elif .key == "Token" then .value=env.Token
-            elif .key == "Inst_Num" then .value=env.Inst_Num
-            elif .key == "Application_Num" then .value=env.Application_Num
-            elif .key == "TIMEOUT_MS" then .value=(env.TIMEOUT_MS // 1 | tostring)
-            else . end
-          )' postman/environments/dev.postman_environment.json.example > dev.env.json
+          cp postman/environments/dev.postman_environment.json.example dev.env.json
+          node -e "
+            const fs=require('fs');
+            const p='dev.env.json';
+            const env=JSON.parse(fs.readFileSync(p,'utf8'));
+            const map={
+              API_BASE_URL: process.env.API_BASE_URL,
+              Token: process.env.Token,
+              Inst_Num: process.env.Inst_Num,
+              Application_Num: process.env.Application_Num,
+              TIMEOUT_MS: (process.env.TIMEOUT_MS||'5000').toString()
+            };
+            env.values.forEach(v=>{
+              if(map[v.key]!==undefined){ v.value = map[v.key]; }
+            });
+            fs.writeFileSync(p, JSON.stringify(env,null,2));
+          "
         env:
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
           Token: ${{ secrets.Token }}
@@ -30,9 +41,12 @@ jobs:
           Application_Num: ${{ secrets.Application_Num }}
           TIMEOUT_MS: 5000
 
-      - name: Run Newman (full suite)
+      - name: Run Newman (FULL)
         run: |
-          newman run postman/collections/API_Showcase_Extended.postman_collection.json             -e dev.env.json             --reporters cli,junit             --reporter-junit-export newman-full.xml
+          newman run postman/collections/API_Showcase_Extended.postman_collection.json \
+            -e dev.env.json \
+            --reporters cli,junit \
+            --reporter-junit-export newman-full.xml
 
       - name: Upload JUnit report
         uses: actions/upload-artifact@v4
