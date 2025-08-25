@@ -3,7 +3,7 @@
 [![Smoke CI](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-smoke.yml/badge.svg)](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-smoke.yml)
 [![Full CI](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-full.yml/badge.svg)](https://github.com/Mooncheez360/qa-portfolio/actions/workflows/postman-full.yml)
 
----
+--- 
 
 This repo is a safe, public demo of how I structure API automation with Postman + GitHub Actions.  
 Two collections, simple env templating, and CI that runs smoke on PRs and full on `main`.  
