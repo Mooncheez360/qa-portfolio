@@ -15,24 +15,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm i -g newman jq
+      - run: npm i -g newman
 
       - name: Create environment from template
         run: |
-          jq '.values |= map(
-            if .key == "API_BASE_URL" then .value=env.API_BASE_URL
-            elif .key == "Token" then .value=env.Token
-            elif .key == "Inst_Num" then .value=env.Inst_Num
-            elif .key == "Application_Num" then .value=env.Application_Num
-            elif .key == "TIMEOUT_MS" then .value=(env.TIMEOUT_MS // 1 | tostring)
-            else . end
-          )' postman/environments/dev.postman_environment.json.example > dev.env.json
-        env:
-          API_BASE_URL: ${{ secrets.API_BASE_URL }}
-          Token: ${{ secrets.Token }}
-          Inst_Num: ${{ secrets.Inst_Num }}
-          Application_Num: ${{ secrets.Application_Num }}
-          TIMEOUT_MS: 5000
+          cp postman/environments/dev.postman_environment.json.example dev.env.json
+          sed -i "s|\"API_BASE_URL\": \"\"|\"API_BASE_URL\": \"${{ secrets.API_BASE_URL }}\"|" dev.env.json
+          sed -i "s|\"Token\": \"\"|\"Token\": \"${{ secrets.Token }}\"|" dev.env.json
+          sed -i "s|\"Inst_Num\": \"\"|\"Inst_Num\": \"${{ secrets.Inst_Num }}\"|" dev.env.json
+          sed -i "s|\"Application_Num\": \"\"|\"Application_Num\": \"${{ secrets.Application_Num }}\"|" dev.env.json
 
       - name: Run Newman (SMOKE)
         run: |
