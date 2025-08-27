@@ -31,9 +31,7 @@ jobs:
               Application_Num: process.env.Application_Num,
               TIMEOUT_MS: (process.env.TIMEOUT_MS||'60000').toString()
             };
-            env.values.forEach(v=>{
-              if(map[v.key]!==undefined){ v.value = map[v.key]; }
-            });
+            env.values.forEach(v=>{ if(map[v.key]!==undefined){ v.value = map[v.key]; }});
             fs.writeFileSync(p, JSON.stringify(env,null,2));
           "
         env:
@@ -43,15 +41,24 @@ jobs:
           Application_Num: ${{ secrets.Application_Num }}
           TIMEOUT_MS: 60000
 
-      - name: Patch collection to use TIMEOUT_MS in response-time test
+      - name: Patch collections to use TIMEOUT_MS for response-time asserts
         run: |
           node -e "
             const fs=require('fs');
-            const p='postman/collections/API_Showcase_Extended.postman_collection.json';
-            let s=fs.readFileSync(p,'utf8');
-            s=s.replace(/responseTime\)\.below\(\s*5000\s*\)/g,
-              \"responseTime).below(parseInt(pm.environment.get('TIMEOUT_MS')||'5000'))\");
-            fs.writeFileSync(p,s);
+            const targets=[
+              'postman/collections/API_Showcase_Extended.postman_collection.json',
+              'postman/collections/API_Showcase_Base.postman_collection.json'
+            ];
+            for (const p of targets) {
+              if (!fs.existsSync(p)) continue;
+              let s=fs.readFileSync(p,'utf8');
+              // Replace ANY pm.expect(pm.response.responseTime).below(NUM)
+              s=s.replace(
+                /pm\\.expect\\(\\s*pm\\.response\\.responseTime\\s*\\)\\.below\\(\\s*\\d+\\s*\\)/g,
+                \"pm.expect(pm.response.responseTime).below(parseInt(pm.environment.get('TIMEOUT_MS')||'5000'))\"
+              );
+              fs.writeFileSync(p,s);
+            }
           "
 
       - name: Run Newman (SMOKE)
