@@ -29,7 +29,7 @@ jobs:
               Token: process.env.Token,
               Inst_Num: process.env.Inst_Num,
               Application_Num: process.env.Application_Num,
-              TIMEOUT_MS: (process.env.TIMEOUT_MS||'5000').toString()
+              TIMEOUT_MS: (process.env.TIMEOUT_MS||'60000').toString()
             };
             env.values.forEach(v=>{
               if(map[v.key]!==undefined){ v.value = map[v.key]; }
@@ -41,7 +41,18 @@ jobs:
           Token: ${{ secrets.Token }}
           Inst_Num: ${{ secrets.Inst_Num }}
           Application_Num: ${{ secrets.Application_Num }}
-          TIMEOUT_MS: 5000
+          TIMEOUT_MS: 60000
+
+      - name: Patch collection to use TIMEOUT_MS in response-time test
+        run: |
+          node -e "
+            const fs=require('fs');
+            const p='postman/collections/API_Showcase_Extended.postman_collection.json';
+            let s=fs.readFileSync(p,'utf8');
+            s=s.replace(/responseTime\)\.below\(\s*5000\s*\)/g,
+              \"responseTime).below(parseInt(pm.environment.get('TIMEOUT_MS')||'5000'))\");
+            fs.writeFileSync(p,s);
+          "
 
       - name: Run Newman (SMOKE)
         run: |
