@@ -22,7 +22,7 @@ jobs:
       # Real run (only executes if secrets are set in repo)
       - name: Trigger ACCELQ CI Job
         if: env.HAVE_ACCELQ == 'true'
-        uses: accelQ-Inc/accelq-ci-github-actions@v1
+        uses: accelQ-Inc/accelq-ci-github-actions@v1.4 # <-- fix: use v1.4 (or a specific SHA)
         with:
           accelq_base_url: ${{ secrets.ACCELQ_BASE_URL }}   # e.g. https://YOURTENANT.accelq.io
           accelq_api_key:  ${{ secrets.ACCELQ_API_KEY }}    # service or personal API key
