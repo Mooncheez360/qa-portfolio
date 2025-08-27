@@ -3,7 +3,7 @@ name: ACCELQ - E2E Suite
 on:
   workflow_dispatch:
   # schedule:
-  #   - cron: "0 9 * * 1-5"  # Weekdays 09:00 UTC (optional, uncomment if you want auto-runs)
+  #   - cron: "0 9 * * 1-5"  # optional
 
 jobs:
   accelq:
@@ -13,37 +13,40 @@ jobs:
 
       - name: Detect secrets
         run: |
-          if [ -n "${{ secrets.ACCELQ_BASE_URL }}" ] && [ -n "${{ secrets.ACCELQ_API_KEY }}" ]; then
+          if [ -n "${{ secrets.ACCELQ_APP_URL }}" ] && \
+             [ -n "${{ secrets.ACCELQ_USERNAME }}" ] && \
+             [ -n "${{ secrets.ACCELQ_API_KEY }}" ] && \
+             [ -n "${{ secrets.ACCELQ_TENANT }}" ] && \
+             [ -n "${{ secrets.ACCELQ_JOB_ID }}" ]; then
             echo "HAVE_ACCELQ=true" >> $GITHUB_ENV
           else
             echo "HAVE_ACCELQ=false" >> $GITHUB_ENV
           fi
 
-      # Real run (only executes if secrets are set in repo)
+      # Real ACCELQ run (only when all secrets exist)
       - name: Trigger ACCELQ CI Job
         if: env.HAVE_ACCELQ == 'true'
-        uses: accelQ-Inc/accelq-ci-github-actions@v1.4 # <-- fix: use v1.4 (or a specific SHA)
+        uses: accelQ-Inc/accelq-ci-github-actions@v1.4
         with:
-          accelq_base_url: ${{ secrets.ACCELQ_BASE_URL }}   # e.g. https://YOURTENANT.accelq.io
-          accelq_api_key:  ${{ secrets.ACCELQ_API_KEY }}    # service or personal API key
-          project:         "GPS"
-          job_name:        "GTO Dashboard Searches 378"
-          run_params:      'tags=@smoke env=qa parallel=4'
+          appURL:   ${{ secrets.ACCELQ_APP_URL }}     # e.g. https://YOURTENANT.accelq.io
+          userName: ${{ secrets.ACCELQ_USERNAME }}    # your ACCELQ username
+          apiKey:   ${{ secrets.ACCELQ_API_KEY }}     # API key
+          tenantCode: ${{ secrets.ACCELQ_TENANT }}    # tenant code (short code)
+          jobId:    ${{ secrets.ACCELQ_JOB_ID }}      # the CI job ID from ACCELQ
+          runParam: 'tags=@smoke env=qa parallel=4'   # adjust as you like
 
-      # Fallback placeholder so badge stays green even if secrets aren't set yet
+      # Placeholder so badge stays green until secrets are set
       - name: ACCELQ placeholder (no secrets set)
         if: env.HAVE_ACCELQ != 'true'
         run: |
           echo "ACCELQ secrets not set. Skipping real run and passing placeholder step."
-          echo "Set ACCELQ_BASE_URL and ACCELQ_API_KEY in repo secrets to enable real runs."
+          echo "Set ACCELQ_* secrets to enable real runs."
 
       - name: Save ACCELQ summary
         if: always()
         run: |
           echo "ACCELQ run summary" > accelq-summary.txt
           echo "Secrets configured: ${{ env.HAVE_ACCELQ }}" >> accelq-summary.txt
-          echo "Project: YOUR_PROJECT_NAME" >> accelq-summary.txt
-          echo "Job: YOUR_JOB_NAME" >> accelq-summary.txt
 
       - name: Upload ACCELQ summary
         if: always()
