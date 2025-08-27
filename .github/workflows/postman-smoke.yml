@@ -52,9 +52,8 @@ jobs:
             for (const p of targets) {
               if (!fs.existsSync(p)) continue;
               let s=fs.readFileSync(p,'utf8');
-              // Replace ANY pm.expect(pm.response.responseTime).below(NUM)
               s=s.replace(
-                /pm\\.expect\\(\\s*pm\\.response\\.responseTime\\s*\\)\\.below\\(\\s*\\d+\\s*\\)/g,
+                /pm\.expect\(\s*pm\.response\.responseTime\s*\)\.below\(\s*\d+\s*\)/g,
                 \"pm.expect(pm.response.responseTime).below(parseInt(pm.environment.get('TIMEOUT_MS')||'5000'))\"
               );
               fs.writeFileSync(p,s);
@@ -65,6 +64,7 @@ jobs:
         run: |
           newman run postman/collections/API_Showcase_Extended.postman_collection.json \
             -e dev.env.json \
+            --delay-request 500 \
             --reporters cli,junit \
             --reporter-junit-export newman-smoke.xml
 
